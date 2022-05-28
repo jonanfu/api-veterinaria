@@ -1,15 +1,12 @@
 from datetime import datetime
 
-import peewee
+from peewee import *
 
-from app.v1.utils.db import db
+from app.v1.model.base_model import BaseModel
 from app.v1.model.user_model import User
 
-class Todo(peewee.Model):
-    title = peewee.CharField()
-    created_at = peewee.DateTimeField(default=datetime.now)
-    is_done = peewee.BooleanField(default=False)
-    user = peewee.ForeignKeyField(User, backref="todo")
-
-    class Meta:
-        database = db
+class Todo(BaseModel):
+    title = CharField()
+    created_at = DateTimeField(default=datetime.now)
+    is_done = BooleanField(default=False)
+    user = ForeignKeyField(User, backref="todo")

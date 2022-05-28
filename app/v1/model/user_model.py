@@ -1,11 +1,8 @@
-import peewee
+from peewee import *
 
-from app.v1.utils.db import db
+from app.v1.model.base_model import BaseModel
 
-class User(peewee.Model):
-    email = peewee.CharField(unique=True, index=True)
-    username = peewee.CharField(unique=True, index=True)
-    password = peewee.CharField()
-
-    class Meta:
-        database = db
+class User(BaseModel):
+    email = CharField(unique=True, index=True)
+    username = CharField(unique=True, index=True)
+    password = CharField()
