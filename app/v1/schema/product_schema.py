@@ -13,14 +13,13 @@ class ProductCreate(BaseModel):
     price:float = Field(...)
     stock:int = Field(...)
     minimun_amount:int = Field(...)
-    due_date: Optional[date] = Field(default = None)
+    due_date: datetime = Field(...)
     location:str
 
     product_category:int = Field(...)
-
+    provider:int = Field(...)
 
 
 class Product(ProductCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())
+   

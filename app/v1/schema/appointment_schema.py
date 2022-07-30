@@ -15,11 +15,11 @@ class AppointmentCreate(BaseModel):
         max_length = 10
     )
     email: EmailStr
-    date: Optional[date] = Field(default=None)
-    hour: Optional[date] = Field(default=None)
+    date: datetime = Field(...)
+    hour: datetime = Field(...)
     reason:str
     initer_notes:str
-    activate_reminder: Optional[date] = Field(default=None)
+    activate_reminder: bool = Field(default= False)
     user:int = Field(...)
     type_appointment:int = Field(...)
     patient:int = Field(...)

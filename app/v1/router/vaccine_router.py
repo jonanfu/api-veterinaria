@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import vaccine_schema
 from app.v1.service import vaccine_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,9 +22,9 @@ router = APIRouter(prefix = '/api/v1/vaccine')
     dependencies = [Depends(get_db)]
 )
 def create_vaccine (
-    vaccine: vaccine_schema.VaccineCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return vaccine_service.create_vaccine(vaccine, current_user)
+    vaccine: vaccine_schema.VaccineCreate = Body(...)
+):
+    return vaccine_service.create_vaccine(vaccine)
 
 
 @router.get (
@@ -34,11 +34,8 @@ def create_vaccine (
     response_model = List[vaccine_schema.Vaccine],
     dependencies = [Depends(get_db)]
 )
-def get_vaccine(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return vaccine_service.get_vaccines(current_user, is_done)
+def get_vaccines():
+    return vaccine_service.get_vaccines()
 
 
 @router.get (
@@ -52,10 +49,9 @@ def get_vaccine(
     vaccine_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return vaccine_service.get_vaccine(vaccine_id, current_user)
+    return vaccine_service.get_vaccine(vaccine_id)
 
 
 @router.patch (
@@ -70,9 +66,18 @@ def vaccine_update (
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    vaccine: vaccine_schema.Vaccine = Body(...)
 ):
-    return vaccine_service.update_status_task(vaccine_id, current_user)
+    return vaccine_service.update_vaccine(vaccine_id,
+        date= vaccine.date,
+        lot= vaccine.lot,
+        apply_vaccine= vaccine.apply_vaccine,
+        expiration= vaccine.expiration,
+        price= vaccine.price,
+        weight= vaccine.weight,
+        previous_vaccinations= vaccine.previous_vaccinations,
+        type_vaccine= vaccine.type_vaccine
+    )
 
 
 @router.delete(
@@ -85,10 +90,9 @@ def delete_vaccine(
     vaccine_id: int = Path(
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    vaccine_service.delete_vaccine(vaccine_id, current_user)
+    vaccine_service.delete_vaccine(vaccine_id)
 
     return {
         'msg': 'vaccine has been deleted sucessfully'

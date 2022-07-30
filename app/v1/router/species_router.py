@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import species_schema
 from app.v1.service import species_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,9 +22,8 @@ router = APIRouter(prefix = '/api/v1/species')
     dependencies = [Depends(get_db)]
 )
 def create_species (
-    species: species_schema.SpeciesCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return species_service.create_species(species, current_user)
+    species: species_schema.SpeciesCreate = Body(...)):
+    return species_service.create_species(species)
 
 
 @router.get (
@@ -34,11 +33,8 @@ def create_species (
     response_model = List[species_schema.Species],
     dependencies = [Depends(get_db)]
 )
-def get_species(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return species_service.get_species(current_user, is_done)
+def get_species():
+    return species_service.get_species()
 
 
 @router.get (
@@ -52,10 +48,9 @@ def get_species(
     species_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return species_service.get_species(species_id, current_user)
+    return species_service.get_species(species_id)
 
 
 @router.patch (
@@ -70,9 +65,12 @@ def species_update (
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    species: species_schema.Species = Body(...)
 ):
-    return species_service.update_species(species_id, current_user)
+    return species_service.update_species(species_id,
+        name = species.name,
+        description = species.description
+        ) 
 
 
 @router.delete(
@@ -88,7 +86,7 @@ def delete_species(
     ),
     current_user: User = Depends(get_current_user)
 ):
-    species_service.delete_species(species_id, current_user)
+    species_service.delete_species(species_id)
 
     return {
         'msg': 'species has been deleted sucessfully'

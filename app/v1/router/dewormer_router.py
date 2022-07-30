@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import dewormer_schema
 from app.v1.service import dewormer_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,7 +22,6 @@ router = APIRouter(prefix = '/api/v1/dewormer')
     dependencies = [Depends(get_db)]
 )
 def create_dewormer (
-    todo: dewormer_schema.DewormerCreate = Body(...),
     current_user: User = Depends(get_current_user)):
     return dewormer_service.create_dewormer(dewormer, current_user)
 

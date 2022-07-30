@@ -7,22 +7,14 @@ from pydantic import Field
 
 
 class DetailPurchaseCreate(BaseModel):
-
-    amount:int = Field(
-        ...,
-        min_length = 1
-    )
+    amount:int = Field(...)
     price:float = Field(...)
     subtotal:float = Field(...)
     tax:float = Field(...)
     profit_percentage:float = Field(...)
-    #
+    
     purchase:int = Field(...)
-    product = Field(...)
-
-
+    product:int = Field(...)
 
 class DetailPurchase(DetailPurchaseCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())

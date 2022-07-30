@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import clinic_schema
 from app.v1.service import clinic_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,7 +22,7 @@ router = APIRouter(prefix = '/api/v1/clinic')
     dependencies = [Depends(get_db)]
 )
 def create_clinic (
-    todo: clinic_schema.ClinicCreate = Body(...),
+    clinic: clinic_schema.ClinicCreate = Body(...),
     current_user: User = Depends(get_current_user)):
     return clinic_service.create_clinic(clinic, current_user)
 
@@ -35,10 +35,9 @@ def create_clinic (
     dependencies = [Depends(get_db)]
 )
 def get_clinic(
-    is_done: Optional[bool] = Query(None),
     current_user: User = Depends(get_current_user)
 ):
-    return clinic_service.get_clinics(current_user, is_done)
+    return clinic_service.get_clinics(current_user)
 
 
 @router.get (
@@ -49,13 +48,12 @@ def get_clinic(
     dependencies = [Depends(get_db)]
 )
 def get_clinic(
-    task_id: int = Path (
+    clinic_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return clinic_service.get_task(clinic_id, current_user)
+    return clinic_service.get_clinic(clinic_id)
 
 
 @router.patch (
@@ -66,13 +64,21 @@ def get_clinic(
     dependencies=[Depends(get_db)]
 )
 def clinic_update (
-    task_id: int = Path(
+    clinic_id: int = Path(
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    clinic: clinic_schema.Clinic = Body(...)
+    #current_user: User = Depends(get_current_user)
 ):
-    return clinic_service.update_status_task(clinic_id, current_user)
+    return clinic_service.update_status_task(clinic_id,
+        name=clinic.name,
+        addres=clinic.addres,
+        city=clinic.city,
+        phone=clinic.phone,
+        ruc=clinic.ruc
+        #user=current_user
+    )
 
 
 @router.delete(
@@ -82,13 +88,12 @@ def clinic_update (
     dependencies=[Depends(get_db)]
 )
 def delete_clinic(
-    task_id: int = Path(
+    clinic_id: int = Path(
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    clinic_service.delete_clinic(clinic_id, current_user)
+    clinic_service.delete_clinic(clinic_id)
 
     return {
         'msg': 'clinic has been deleted sucessfully'

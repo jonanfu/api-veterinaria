@@ -12,4 +12,3 @@ class SpeciesCreate(BaseModel):
 
 class Species(SpeciesCreate):
     id: int = Field(...)
-    created_at: datetime = Field(default = datetime.now())

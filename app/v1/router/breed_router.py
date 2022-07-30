@@ -22,8 +22,8 @@ router = APIRouter(prefix = '/api/v1/breed')
 )
 def create_breed (
     breed: breed_shema.BreedCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return breed_service.create_breed(breed, current_user)
+    ):
+    return breed_service.create_breed(breed)
 
 
 @router.get (
@@ -33,28 +33,25 @@ def create_breed (
     response_model = List[breed_shema.Breed],
     dependencies = [Depends(get_db)]
 )
-def get_breeds(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return breed_service.get_breeds(current_user, is_done)
+def get_breeds():
+    return breed_service.get_breeds()
 
 
-@router.get (
-    '/{breed_id}',
-    tags = ['breed'],
-    status_code = status.HTTP_200_OK,
-    response_model = breed_shema.Breed,
-    dependencies = [Depends(get_db)]
-)
-def get_breed(
-    breed_id: int = Path (
-        ...,
-        gt=0
-    ),
-    current_user: User = Depends(get_current_user)
-):
-    return breed_service.get_breed(breed_id, current_user)
+# @router.get (
+#     '/{breed_id}',
+#     tags = ['breed'],
+#     status_code = status.HTTP_200_OK,
+#     response_model = breed_shema.Breed,
+#     dependencies = [Depends(get_db)]
+# )
+# def get_breed(
+#     breed_id: int = Path (
+#         ...,
+#         gt=0
+#     ),
+#     current_user: User = Depends(get_current_user)
+# ):
+#     return breed_service.get_breed(breed_id, current_user)
 
 
 @router.put (
@@ -69,10 +66,12 @@ def update_breed (
         ...,
         gt=0
     ),
-    breed: breed_shema.BreedUpdate = Body(...),
-    current_user: User = Depends(get_current_user)
+    breed: breed_shema.Breed = Body(...),
 ):
-    return breed_service.update_breed(breed_id, breed, current_user)
+    return breed_service.update_breed(breed_id, 
+        name = breed.name,
+        description = breed.description,
+        species = breed.species)
 
 
 @router.delete (
@@ -85,8 +84,11 @@ def delete_breed (
     breed_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return breed_service.delete_breed(breed_id, current_user)
+    breed_service.delete_breed(breed_id)
+
+    return {
+        'msg': 'Breed has been deleted sucessfully'
+    }
 

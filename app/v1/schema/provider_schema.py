@@ -2,7 +2,7 @@
 from datetime import datetime
 
 #Pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from pydantic import Field
 
 
@@ -26,5 +26,4 @@ class ProviderCreate(BaseModel):
 
 class Provider(ProviderCreate):
     id: int = Field(...)
-    is_actived:bool = Field(default = True)
-    created_at: datetime = Field(default = datetime.now())
+    

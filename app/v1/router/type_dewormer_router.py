@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import type_dewormer_schema
 from app.v1.service import type_dewormer_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,9 +22,8 @@ router = APIRouter(prefix = '/api/v1/type_dewormer')
     dependencies = [Depends(get_db)]
 )
 def create_type_dewormer (
-    todo: type_dewormer_schema.TypeDewormerCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return type_dewormer_service.create_type_dewormer(type_dewormer, current_user)
+    type_dewormer: type_dewormer_schema.TypeDewormerCreate = Body(...)):
+    return type_dewormer_service.create_type_dewormer(type_dewormer)
 
 
 @router.get (
@@ -34,11 +33,8 @@ def create_type_dewormer (
     response_model = List[type_dewormer_schema.TypeDewormer],
     dependencies = [Depends(get_db)]
 )
-def get_type_dewormer(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return type_dewormer_service.get_type_dewormers(current_user, is_done)
+def get_type_dewormer():
+    return type_dewormer_service.get_type_dewormer()
 
 
 @router.get (
@@ -52,10 +48,9 @@ def get_type_dewormer(
     type_dewormer_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return type_dewormer_service.get_type_dewormer(type_dewormer_id, current_user)
+    return type_dewormer_service.get_type_dewormer(type_dewormer_id)
 
 
 @router.patch (
@@ -70,9 +65,12 @@ def type_dewormer_update (
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    type_dewormer: type_dewormer_schema.TypeDewormer = Body(...)
 ):
-    return type_dewormer_service.update_status_task(type_dewormer_id, current_user)
+    return type_dewormer_service.update_type_dewormer(type_dewormer_id,
+        name = type_dewormer.name,
+        description = type_dewormer.description
+        ) 
 
 
 @router.delete(
@@ -85,11 +83,10 @@ def delete_type_dewormer(
     type_dewormer_id: int = Path(
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    type_dewormer_service.delete_type_dewormer(type_dewormer_id, current_user)
+    type_dewormer_service.delete_type_dewormer(type_dewormer_id)
 
     return {
-        'msg': 'type dewormer has been deleted sucessfully'
+        'msg': 'type_dewormer has been deleted sucessfully'
     }

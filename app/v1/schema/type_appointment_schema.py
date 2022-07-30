@@ -13,5 +13,4 @@ class TypeAppointmentCreate(BaseModel):
 
 class TypeAppointment(TypeAppointmentCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())
+    

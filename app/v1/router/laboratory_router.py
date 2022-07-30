@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import laboratory_schema
 from app.v1.service import laboratory_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,9 +22,9 @@ router = APIRouter(prefix = '/api/v1/laboratory')
     dependencies = [Depends(get_db)]
 )
 def create_laboratory (
-    laboratory: laboratory_schema.LaboratoryCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return laboratory_service.create_laboratory(laboratory, current_user)
+    laboratory: laboratory_schema.LaboratoryCreate = Body(...)
+    ):
+    return laboratory_service.create_laboratory(laboratory)
 
 
 @router.get (
@@ -34,11 +34,8 @@ def create_laboratory (
     response_model = List[laboratory_schema.Laboratory],
     dependencies = [Depends(get_db)]
 )
-def get_laboratory(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return laboratory_service.get_laboratorys(current_user, is_done)
+def get_laboratory():
+    return laboratory_service.get_laboratorys()
 
 
 @router.get (
@@ -52,10 +49,9 @@ def get_laboratory(
     laboratory_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return laboratory_service.get_task(laboratory_id, current_user)
+    return laboratory_service.get_task(laboratory_id)
 
 
 @router.patch (
@@ -70,9 +66,11 @@ def laboratory_update (
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    laboratory: laboratory_schema.Laboratory = Body(...)
 ):
-    return laboratory_service.update_status_task(laboratory_id, current_user)
+    return laboratory_service.update_laboratory(laboratory_id,
+        name = laboratory.name,
+        description = laboratory.description)
 
 
 @router.delete(
@@ -85,10 +83,9 @@ def delete_laboratory(
     laboratory_id: int = Path(
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    laboratory_service.delete_laboratory(laboratory_id, current_user)
+    laboratory_service.delete_laboratory(laboratory_id)
 
     return {
         'msg': 'laboratory has been deleted sucessfully'

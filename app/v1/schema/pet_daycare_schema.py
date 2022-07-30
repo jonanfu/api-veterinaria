@@ -6,11 +6,10 @@ from pydantic import BaseModel
 from pydantic import Field
 
 
-class PayDaycareCreate(BaseModel):
-    time_eat: Optional[date] = Field(default = None)
+class PetDaycareCreate(BaseModel):
+    time_eat: datetime = Field(...)
     notes:str
-    admission_date:bool = Field(default = datetime.now)
-    departure_date: Optional[date] = Field(default = None)
+    departure_date:datetime
     moment_payment:str = Field(...)
     price:float = Field(...)
     form_payment:str = Field(...)
@@ -19,7 +18,6 @@ class PayDaycareCreate(BaseModel):
     patient:int = Field(...)
 
 
-class PayDaycare(PayDaycareCreate):
+class PetDaycare(PetDaycareCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())
+    admission_date: datetime = Field(default = datetime.now())

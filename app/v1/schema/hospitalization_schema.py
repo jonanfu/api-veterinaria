@@ -23,10 +23,8 @@ class HospitalizationCreate(BaseModel):
     feeding:str = Field(...)
     observation:str = Field(...)
     other_indications:str = Field(...)
-    parameters = Field(...)
-    date: Optional[date] = Field(default = datetime.now)
+    parameters:str = Field(...)
 
 class Hospitalization(HospitalizationCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())
+    date: datetime = Field(default = datetime.now())

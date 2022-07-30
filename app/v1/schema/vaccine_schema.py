@@ -7,10 +7,10 @@ from pydantic import Field
 
 
 class VaccineCreate(BaseModel):
-    date: Optional[date] = Field(default = datetime.now)
+    date: datetime = Field(...)
     lot:str = Field(...)
     apply_vaccine:bool = Field(default = True)
-    expiration: Optional[date] = Field(default = None)
+    expiration: datetime = Field(...)
     price:float = Field(...)
     weight:float = Field(...)
     previous_vaccinations:bool = Field(default = False)

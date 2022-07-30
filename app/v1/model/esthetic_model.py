@@ -13,5 +13,4 @@ class Esthetic(BaseModel):
     price = FloatField()
     form_payment = CharField()
     is_paid = BooleanField()
-
     patient = ForeignKeyField(Patient, backref = 'esthetic')

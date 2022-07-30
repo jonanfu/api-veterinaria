@@ -7,7 +7,7 @@ from typing import List, Optional
 
 from app.v1.schema import provider_schema
 from app.v1.service import provider_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -23,8 +23,8 @@ router = APIRouter(prefix = '/api/v1/provider')
 )
 def create_provider (
     provider: provider_schema.ProviderCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return provider_service.create_provider(provider, current_user)
+    ):
+    return provider_service.create_provider(provider)
 
 
 @router.get (
@@ -34,11 +34,8 @@ def create_provider (
     response_model = List[provider_schema.Provider],
     dependencies = [Depends(get_db)]
 )
-def get_provider(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return provider_service.get_providers(current_user, is_done)
+def get_provider():
+    return provider_service.get_providers()
 
 
 @router.get (
@@ -52,10 +49,9 @@ def get_provider(
     provider_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return provider_service.get_task(provider_id, current_user)
+    return provider_service.get_provider(provider_id)
 
 
 @router.patch (
@@ -65,14 +61,23 @@ def get_provider(
     response_model = provider_schema.Provider,
     dependencies=[Depends(get_db)]
 )
-def provider_update (
+def update_provider (
     provider_id: int = Path(
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    provider: provider_schema.Provider = Body(...)
 ):
-    return provider_service.update_provider(provider_id, current_user)
+    return provider_service.update_provider(provider_id,
+        name = provider.name,
+        ruc = provider.ruc,
+        email = provider.email,
+        country = provider.country,
+        province = provider.province,
+        city = provider.city,
+        address = provider.address,
+        posta_code = provider.postal_code,
+        )
 
 
 @router.delete(
@@ -85,11 +90,7 @@ def delete_provider(
     provider_id: int = Path(
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    provider_service.delete_provider(provider_id, current_user)
 
-    return {
-        'msg': 'provider has been deleted sucessfully'
-    }
+    return provider_service.delete_provider(provider_id)

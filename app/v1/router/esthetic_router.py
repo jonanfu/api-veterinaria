@@ -5,9 +5,9 @@ from fastapi import Path
 
 from typing import List, Optional
 
-from app.v1.schema import esthetic_schema
+from app.v1.schema import esthetic_has_type_service_schema, esthetic_schema
 from app.v1.service import esthetic_service
-from app.v1.utils import get_db
+from app.v1.utils.db import get_db
 from app.v1.schema.user_schema import User
 from app.v1.service.auth_service import get_current_user
 
@@ -22,9 +22,9 @@ router = APIRouter(prefix = '/api/v1/esthetic')
     dependencies = [Depends(get_db)]
 )
 def create_esthetic (
-    todo: esthetic_schema.EstheticCreate = Body(...),
-    current_user: User = Depends(get_current_user)):
-    return esthetic_service.create_esthetic(esthetic, current_user)
+    esthetic: esthetic_schema.EstheticCreate = Body(...)
+):
+    return esthetic_service.create_esthetic(esthetic)
 
 
 @router.get (
@@ -34,11 +34,8 @@ def create_esthetic (
     response_model = List[esthetic_schema.Esthetic],
     dependencies = [Depends(get_db)]
 )
-def get_esthetic(
-    is_done: Optional[bool] = Query(None),
-    current_user: User = Depends(get_current_user)
-):
-    return esthetic_service.get_esthetics(current_user, is_done)
+def get_esthetic():
+    return esthetic_service.get_esthetics()
 
 
 @router.get (
@@ -52,10 +49,9 @@ def get_esthetic(
     esthetic_id: int = Path (
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    return esthetic_service.get_esthetic(esthetic_id, current_user)
+    return esthetic_service.get_esthetic(esthetic_id)
 
 
 @router.patch (
@@ -70,9 +66,17 @@ def esthetic_update (
         ...,
         gt=0
     ),
-    current_user: User = Depends(get_current_user)
+    esthetic_has_type_service: esthetic_has_type_service_schema.EstheticHasTypeService = Body(...)
 ):
-    return esthetic_service.update_esthetic(esthetic_id, current_user)
+    return esthetic_service.update_esthetic(esthetic_id,
+        date=esthetic_has_type_service.date,
+        hour = esthetic_has_type_service.hour,
+        activate_notification=esthetic_has_type_service.activate_notification,
+        price=esthetic_has_type_service.price,
+        form_payment=esthetic_has_type_service.form_payment,
+        is_paid=esthetic_has_type_service.is_paid,
+        patient=esthetic_has_type_service.patient
+    )
 
 
 @router.delete(
@@ -85,10 +89,9 @@ def delete_esthetic(
     esthetic_id: int = Path(
         ...,
         gt=0
-    ),
-    current_user: User = Depends(get_current_user)
+    )
 ):
-    esthetic_service.delete_esthetic(esthetic_id, current_user)
+    esthetic_service.delete_esthetic(esthetic_id)
 
     return {
         'msg': 'esthetic has been deleted sucessfully'

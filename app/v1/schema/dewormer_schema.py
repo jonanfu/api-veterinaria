@@ -7,7 +7,7 @@ from pydantic import Field
 
 
 class DewormerCreate(BaseModel):
-    date: Optional[date] = Field(default = datetime.now)
+    date: datetime = Field(...)
     apply_deworner:bool = Field(default = False)
     lot:str = Field(
         ...,
@@ -15,7 +15,7 @@ class DewormerCreate(BaseModel):
         max_length = 255,
         example = 'Dewormer'
     )
-    expiration: Optional[date] = Field(default = None)
+    expiration: datetime = Field()
     price:float = Field(...)
     weight:float = Field(...)
     type_dewormer:int = Field(...)
@@ -23,5 +23,4 @@ class DewormerCreate(BaseModel):
 
 class Dewormer(DewormerCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())
+    

@@ -7,7 +7,7 @@ from pydantic import Field
 
 
 class ConsultationCreate(BaseModel):
-    date: Optional[date] = Field(default = datetime.now)
+    date: datetime = Field(...)
     reason_visit:str = Field(
         ...,
         min_length = 1,
@@ -25,7 +25,7 @@ class ConsultationCreate(BaseModel):
         max_length = 255,
         example = 'Phisical exam'
     )
-    diagnosis = Field(
+    diagnosis:str = Field(
         ...,
         min_length = 10,
         max_length = 255,
@@ -55,12 +55,11 @@ class ConsultationCreate(BaseModel):
     is_paid:bool = Field(default = False)
 
     user:int = Field(...)
-    vaccine:int = Field(..)
-    dewormer:int = Field(..)
-    patient:int = Field(..)
+    vaccine:int = Field(...)
+    dewormer:int = Field(...)
+    patient:int = Field(...)
 
 
 class Consultation(ConsultationCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
     created_at: datetime = Field(default = datetime.now())

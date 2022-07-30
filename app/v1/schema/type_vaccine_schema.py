@@ -7,11 +7,11 @@ from pydantic import Field
 
 
 class TypeVaccineCreate(BaseModel):
-    name = CharField()
+    name: str = Field()
     description:str
 
 
 
 class TypeVaccine(TypeVaccineCreate):
     id: int = Field(...)
-    created_at: datetime = Field(default = datetime.now())
+

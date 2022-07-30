@@ -10,13 +10,13 @@ class ClinicCreate(BaseModel):
 
     name:str = Field(
         ...,
-        max_length = 10
-        min_length = 150
+        max_length = 10,
+        min_length = 150,
         example = 'name'
     )
     addres:str = Field(
         ...,
-        min_length = 10
+        min_length = 10,
         max_length = 150,
         example = 'addres'
     )
@@ -40,7 +40,6 @@ class ClinicCreate(BaseModel):
     )
     user:int = Field(...)
 
-class Clinic(ConsultationCreate):
+class Clinic(ClinicCreate):
     id: int = Field(...)
-    is_done: bool = Field(default = False)
-    created_at: datetime = Field(default = datetime.now())
+    created: datetime = Field(default = datetime.now())
