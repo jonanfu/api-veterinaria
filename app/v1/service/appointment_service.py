@@ -1,5 +1,3 @@
-from http import client
-from turtle import title
 from fastapi import HTTPException, status
 
 from app.v1.schema import appointment_schema, type_vaccine_schema
