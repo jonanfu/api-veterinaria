@@ -1,4 +1,3 @@
-import email
 from fastapi import HTTPException, status
 
 from app.v1.schema import client_schema

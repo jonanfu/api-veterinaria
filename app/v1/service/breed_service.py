@@ -1,4 +1,3 @@
-from unicodedata import name
 from fastapi import HTTPException, status
 
 from app.v1.schema import breed_shema

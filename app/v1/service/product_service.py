@@ -1,5 +1,4 @@
 from datetime import datetime
-from itertools import product
 from fastapi import HTTPException, status
 from app.v1.model.provider_model import Provider
 
